@@ -1,9 +1,9 @@
-from .handler.httpHandler import startHttp
 from threading import Thread
 import asyncio
 
+from interoperability.broker.controller.controllerService import ControllerService
+from .handler.httpHandler import HTTPHandler
+
 def start():
-    _thread1 = Thread(target=asyncio.run, args=(startHttp(7809),))
-    _thread1.start()
-    _thread2 = Thread(target=asyncio.run, args=(startHttp(7807),))
-    _thread2.start()
+    httpHandler1 = HTTPHandler(2700)
+    httpHandler2 = HTTPHandler(2701)
