@@ -1,0 +1,1 @@
+DB_FILE='C:\sqlite\sqlite-tools-win32-x86-3380300'
