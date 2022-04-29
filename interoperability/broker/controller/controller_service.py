@@ -1,4 +1,4 @@
-from ...persistence import Repository
+from ...persistence.repository import Repository
 
 class ControllerService():
     __id: str

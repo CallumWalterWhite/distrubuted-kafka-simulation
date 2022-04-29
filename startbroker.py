@@ -1,9 +1,8 @@
-from interoperability.broker.controller.main import start
-
+from interoperability.broker import Broker
 
 def main():
-    start(2700, '35DKTG-094F')
-    start(2701, 'WDI54T-094F')
+    Broker()   
+    Broker()
     input('Press enter to close broker \n ')
 
 if __name__ == "__main__":
