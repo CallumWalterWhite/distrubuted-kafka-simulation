@@ -1,4 +1,4 @@
-from interoperability.persistence.repository import Repository
+from ...persistence import Repository
 
 class ControllerService():
     __id: str
@@ -8,5 +8,8 @@ class ControllerService():
         self.__id = id
         self.__repo = repo
 
-    def request(self, source):
-        print(f"{self.__id} \n {source}")
+    def request(self, body):
+        print(f"{self.__id} \n {body}")
+    
+    def get_brokers(self, body):
+        print("test")
