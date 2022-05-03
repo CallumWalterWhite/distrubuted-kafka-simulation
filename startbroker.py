@@ -1,9 +1,7 @@
-from interoperability.broker import Broker
+from interoperability.warden.main import start_warden
 
 def main():
-    Broker()   
-    Broker()
-    input('Press enter to close broker \n ')
+    start_warden()
 
 if __name__ == "__main__":
     main()

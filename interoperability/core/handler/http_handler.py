@@ -1,12 +1,10 @@
 from socketserver import TCPServer
-
-from interoperability.broker.controller.controller_service import ControllerService
 from .request_handler import RequestHandler
 from threading import Thread
 import asyncio
 
 class HTTPHandler():
-    __port: int = 8080
+    __port: int = 2700
     __alive_thread: Thread
     __reflection_class = None
     def __init__(self, port: int, reflection_class):

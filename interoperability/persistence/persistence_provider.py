@@ -12,8 +12,28 @@ class PersistenceProvider:
         finally:
             conn = sqlite3.connect(f'db/{id}.db')
         repo = Repository(conn)
-        PersistenceProvider.initailzeRepo(repo)
+        PersistenceProvider.initailzeRepo(conn, repo)
+        return repo
 
-    def initailzeRepo(repo: Repository):
-        pass
+    def initailzeRepo(conn, repo: Repository):
+        PersistenceProvider.create_broker_table(conn)
         
+    def create_broker_table(conn):
+        try:   
+            conn.execute('''CREATE TABLE BROKER
+                    (ID INT PRIMARY KEY     NOT NULL,
+                    ADDRESS           TEXT    NOT NULL,
+                    PORT        INT NOT NULL);''')
+            conn.commit()
+        except:
+            print('Table already exist... \n')
+            
+    def create_topic_table(conn):
+        try:   
+            conn.execute('''CREATE TABLE TOPIC
+                    (ID INT PRIMARY KEY     NOT NULL,
+                    ADDRESS           TEXT    NOT NULL,
+                    PORT        INT NOT NULL);''')
+            conn.commit()
+        except:
+            print('Table already exist... \n')

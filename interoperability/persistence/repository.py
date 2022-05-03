@@ -1,4 +1,3 @@
-import sqlite3
 from sqlite3 import Connection
 
 class Repository:
@@ -6,3 +5,8 @@ class Repository:
 
     def __init__(self, conn: Connection):
         self.__conn = conn
+
+    def add_broker(self, id, address, port):
+        self.__conn.execute(f"INSERT INTO BROKER (ID,ADDRESS,PORT) \
+            VALUES ('{id}', '{address}', {port})")
+        self.__conn.commit()
