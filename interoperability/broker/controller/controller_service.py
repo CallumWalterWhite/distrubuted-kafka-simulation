@@ -25,7 +25,24 @@ class ControllerService():
         
     def get_topic(self, id):
         return self.__get_topic(UUID(id))
+        
+    def get_messages(self, id):
+        return self.__get_topic_messages(UUID(id))
+
+    def add_message(self, body):
+        data = json.loads(body[1:-1])
+        id = UUID(data['id'])
+        message = data['message']
+        topic: Topic = self.__broker.get_topic(id)
+        topic.add_message(message)
+        return self.__get_topic_messages(id)
 
     def __get_topic(self, id: UUID):
         topic: Topic = self.__broker.get_topic(id)
         return topic.to_object()
+        
+    def __get_topic_messages(self, id: UUID):
+        topic: Topic = self.__broker.get_topic(id)
+        return {
+            'messages': topic.get_messages()
+        }

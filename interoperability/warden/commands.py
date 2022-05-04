@@ -17,7 +17,8 @@ class Command():
     def __print_menu(self):
         print('---------------------------------- ')
         print('1. Start Broker')
-        print('2. Stop warden')
+        print('2. List Brokers')
+        print('3. Stop warden')
         print('---------------------------------- \n')
         user_selection = input()
         self.__command_factory(user_selection)
@@ -32,13 +33,19 @@ class Command():
         print('Broker registerd \n')
 
     def __stop(self):
-        print('test')
+        print('stopping....')
+
+    def __list_brokers(self):
+        pass
 
     def __command_factory(self, user_selection):
         if user_selection == '1':
             self.__start_broker()
             self.__print_menu()
         elif user_selection == '2':
+            self.__list_brokers()
+            self.__print_menu()
+        elif user_selection == '3':
             self.__stop()
         else:
             print('Wrong input \n')
