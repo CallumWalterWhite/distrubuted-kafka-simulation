@@ -6,7 +6,7 @@ class WardenRegister():
     def register():
         BUFFER_SIZE = 1024
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect(WARDEN_ADDRESS, WARDEN_PORT)
+        s.connect(f"{WARDEN_ADDRESS}:{WARDEN_PORT}")
         message = ''
         s.send(message)
         input(".... waiting for response")

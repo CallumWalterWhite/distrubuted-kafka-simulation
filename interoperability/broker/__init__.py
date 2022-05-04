@@ -6,5 +6,5 @@ def main(composite=True):
     if composite:
         Broker()
 
-if __name__ == '__init__':
+if __name__ == '__main__':
     main()
