@@ -12,7 +12,6 @@ class Service():
         self.__repo.add_broker(id, address, port)
         print("broker added...")
         
-
     def list_brokers(self):
         return self.__repo.list_brokers()
         
