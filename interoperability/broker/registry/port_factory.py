@@ -1,7 +1,7 @@
 from http.server import BaseHTTPRequestHandler
 import socket
 from socketserver import TCPServer
-from interoperability.broker.config import INITAL_PORT, FINAL_PORT
+from config import INITAL_PORT, FINAL_PORT
 
 class PortFactory():
     __local_used_ports = []

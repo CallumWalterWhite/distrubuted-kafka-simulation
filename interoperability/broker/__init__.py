@@ -1,4 +1,10 @@
-from interoperability.broker.broker import Broker
-from interoperability.broker.ioc.container import Container
-application = Container()
-application.wire(modules=[__name__])
+import os, sys
+sys.path.append(f"{os.getcwd()}/interoperability/broker")
+from broker import Broker
+
+def main(composite=True):    
+    if composite:
+        Broker()
+
+if __name__ == '__init__':
+    main()

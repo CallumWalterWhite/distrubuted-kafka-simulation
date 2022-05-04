@@ -1,9 +1,6 @@
 import array
 from uuid import UUID, uuid4
-
-from numpy import partition
-
-from interoperability.broker.topic.partition.partition import Partition
+from topic.partition.partition import Partition
 
 
 class Topic():

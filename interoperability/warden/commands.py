@@ -1,6 +1,6 @@
 from email.policy import default
 from uuid import uuid4
-from interoperability.broker.broker import Broker
+from interoperability.broker import Broker
 from interoperability.broker.controller.controller_service import ControllerService
 from interoperability.persistence.persistence_provider import PersistenceProvider
 from interoperability.warden.service import Service
