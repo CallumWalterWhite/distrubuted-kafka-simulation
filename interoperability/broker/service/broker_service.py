@@ -1,23 +1,17 @@
 from uuid import uuid4, UUID
-from interoperability.broker.broker import Broker
-from interoperability.broker.topic.topic import Topic
-from interoperability.persistence.repository import Repository
-import json
+from broker import Broker
+from topic.topic import Topic
+from persistence import Repository
 
-
-class ControllerService():
-    __id: str
+class BrokerService():
     __repo: Repository
     __broker: Broker
 
-    def __init__(self, id, repo: Repository, broker: Broker):
-        self.__id = id
+    def __init__(self, repo: Repository, broker: Broker):
         self.__repo = repo
         self.__broker = broker
 
-    def add_topic(self, body):
-        data = json.loads(body[1:-1])
-        name = data['name']
+    def add_topic(self, name):
         id = uuid4()
         topic: Topic = Topic(id, name) 
         self.__broker.add_topic(topic)
@@ -29,10 +23,7 @@ class ControllerService():
     def get_messages(self, id):
         return self.__get_topic_messages(UUID(id))
 
-    def add_message(self, body):
-        data = json.loads(body[1:-1])
-        id = UUID(data['id'])
-        message = data['message']
+    def add_message(self, id, message):
         topic: Topic = self.__broker.get_topic(id)
         topic.add_message(message)
         return self.__get_topic_messages(id)

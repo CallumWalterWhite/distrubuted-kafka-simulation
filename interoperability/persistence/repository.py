@@ -10,3 +10,8 @@ class Repository:
         self.__conn.execute(f"INSERT INTO BROKER (ID,ADDRESS,PORT) \
             VALUES ('{id}', '{address}', {port})")
         self.__conn.commit()
+        
+    def list_brokers(self):
+        cur = self.__conn.cursor()
+        cur.execute("SELECT * FROM BROKER")
+        return cur.fetchall()

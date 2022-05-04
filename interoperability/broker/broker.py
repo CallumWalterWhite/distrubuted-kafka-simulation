@@ -3,23 +3,25 @@ from uuid import UUID
 from registry.warden_register import WardenRegister
 from registry.port_factory import PortFactory
 from topic.topic import Topic
-sys.path.append(f"{os.getcwd()}\interoperability")
-from core import HTTPHandler
+from core import TCPServe
 
 class Broker():
     topics: array
     id: UUID
     port: int
-    __httpHandler: HTTPHandler
+    __tcpServe: TCPServe
     def __init__(self, id=None):
+        self.port = PortFactory.get_first_available_port()
         if id is None:
-            id = WardenRegister.register()
+            id = WardenRegister.register(self.port)
         self.id = id
         self.topics = []
 
-    def assign_handler(self, controller_service):
-        self.port = PortFactory.get_first_available_port()
-        self.__httpHandler = HTTPHandler(self.port, controller_service)
+    def close(self):
+        self.__tcpServe.close()
+
+    def assign_handler(self, controller):
+        self.__tcpServe = TCPServe(self.port, controller)
 
     def add_topic(self, topic: Topic):
         self.topics.append(topic)

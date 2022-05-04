@@ -1,17 +1,19 @@
 from email.policy import default
 from uuid import uuid4
 from interoperability.broker import Broker
-from interoperability.broker.controller.controller_service import ControllerService
+from interoperability.broker.controller.broker_controller import BrokerController
+from interoperability.broker.service.broker_service import BrokerService
+from interoperability.core.protocol.tcp.serve import TCPServe
 from interoperability.persistence.persistence_provider import PersistenceProvider
 from interoperability.warden.service import Service
 
 
 class Command():
     __service: Service
-    __command_index = 0
-    def __init__(self, service: Service):
+    __tcp_serve: TCPServe
+    def __init__(self, tcp_serve: TCPServe, service: Service):
         self.__service = service
-        self.__command_index = 0
+        self.__tcp_serve = tcp_serve
         self.__print_menu()
 
     def __print_menu(self):
@@ -27,16 +29,18 @@ class Command():
         print('Broker starting \n')
         id = uuid4()
         broker = Broker(id)
-        controller_service = ControllerService(id, PersistenceProvider.getRepo(id), broker)
-        broker.assign_handler(controller_service)
-        self.__service.register_broker(broker.id, 'localhost', broker.port)
+        broker_service = BrokerService(PersistenceProvider.getRepo(id), broker)
+        controller = BrokerController(broker_service)
+        broker.assign_handler(controller)
+        self.__service.add_broker(broker.id, 'localhost', broker.port)
         print('Broker registerd \n')
 
     def __stop(self):
-        print('stopping....')
+        self.__tcp_serve.close()
 
     def __list_brokers(self):
-        pass
+        for row in self.__service.list_brokers():
+            print(row)
 
     def __command_factory(self, user_selection):
         if user_selection == '1':

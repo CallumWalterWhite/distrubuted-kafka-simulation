@@ -1,16 +1,15 @@
 import sqlite3
 import os
-
-from interoperability.persistence.repository import Repository
+from repository import Repository
 
 class PersistenceProvider:
     def getRepo(id):
         try:
-            conn = sqlite3.connect(f'db/{id}.db')
+            conn = sqlite3.connect(f'db/{id}.db', check_same_thread=False)
         except sqlite3.OperationalError:
             os.mkdir('db')
         finally:
-            conn = sqlite3.connect(f'db/{id}.db')
+            conn = sqlite3.connect(f'db/{id}.db', check_same_thread=False)
         repo = Repository(conn)
         PersistenceProvider.initailzeRepo(conn, repo)
         return repo

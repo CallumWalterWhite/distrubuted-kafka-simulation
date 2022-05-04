@@ -4,7 +4,7 @@ import os
 from http.server import BaseHTTPRequestHandler
 from core.uris.identifier import URIIdentifier
 
-class RequestHandler(BaseHTTPRequestHandler):
+class HttpRequestHandler(BaseHTTPRequestHandler):
     def __init__(self, *args, directory=None, **kwargs):
         if directory is None:
             directory = os.getcwd()

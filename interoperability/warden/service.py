@@ -1,16 +1,19 @@
+from uuid import uuid4
 from interoperability.persistence.repository import Repository
 
 
 class Service():
-    __id: str
     __repo: Repository
 
-    def __init__(self, id, repo: Repository):
-        self.__id = id
+    def __init__(self, repo: Repository):
         self.__repo = repo
 
-    def get_brokers(self, body):
-        print('13')
-
-    def register_broker(self, id, address, port):
+    def add_broker(self, id, address, port):
         self.__repo.add_broker(id, address, port)
+        print("broker added...")
+        
+
+    def list_brokers(self):
+        return self.__repo.list_brokers()
+        
+        
