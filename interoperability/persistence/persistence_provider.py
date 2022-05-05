@@ -26,6 +26,11 @@ class PersistenceProvider:
             conn.commit()
         except:
             print('Table already exist... \n')
+            PersistenceProvider.delete_broker_table(conn)
+
+    def delete_broker_table(conn):
+            conn.execute('DELETE FROM BROKER')
+            conn.commit()
             
     def create_topic_table(conn):
         try:   

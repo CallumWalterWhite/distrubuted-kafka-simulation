@@ -11,7 +11,17 @@ class Repository:
             VALUES ('{id}', '{address}', {port})")
         self.__conn.commit()
         
+
+    def delete_all_brokers(self):
+        self.__conn.execute(f"DELETE FROM BROKER")
+        self.__conn.commit()
+        
     def list_brokers(self):
         cur = self.__conn.cursor()
         cur.execute("SELECT * FROM BROKER")
         return cur.fetchall()
+    
+    def get_broker(self, id):
+        cur = self.__conn.cursor()
+        cur.execute("SELECT * FROM BROKER WHERE ID = '{id}'")
+        return cur.fetchall()[0]

@@ -1,4 +1,3 @@
-from email.policy import default
 from uuid import uuid4
 from interoperability.broker import Broker
 from interoperability.broker.controller.broker_controller import BrokerController
@@ -20,7 +19,8 @@ class Command():
         print('---------------------------------- ')
         print('1. Start Broker')
         print('2. List Brokers')
-        print('3. Stop warden')
+        print('3. Add topic')
+        print('4. Stop warden')
         print('---------------------------------- \n')
         user_selection = input()
         self.__command_factory(user_selection)
@@ -32,11 +32,36 @@ class Command():
         broker_service = BrokerService(PersistenceProvider.getRepo(id), broker)
         controller = BrokerController(broker_service)
         broker.assign_handler(controller)
-        self.__service.add_broker(broker.id, 'localhost', broker.port)
+        self.__service.add_broker(broker.id, '127.0.0.1', broker.port)
         print('Broker registerd \n')
 
     def __stop(self):
+        self.__service.delete_all_brokers()
         self.__tcp_serve.close()
+
+    def __add_topic(self):
+        brokers = self.__service.list_brokers()
+        if len(brokers) == 0:
+            print('Broker list empty')
+            return
+        i = 0
+        for row in brokers:
+            list_index = i + 1
+            address = row[1]
+            port = row[2]
+            print(f'{list_index}. {address}:{port}')
+            i = i + 1
+        selection = int(input("Please choose a broker to add topic..."))
+        broker = brokers[selection - 1]
+        if broker is None:
+            print('You do not enter a valid number')
+            return
+        topic_name = input("Please enter topic name...")
+        is_done = self.__service.add_broker_topic(broker, topic_name)
+        if is_done:
+            print(f'Topic added to broker {broker[0]}')
+        else:
+            print(f'Error addoing topic to broker {broker[0]}')
 
     def __list_brokers(self):
         for row in self.__service.list_brokers():
@@ -50,6 +75,9 @@ class Command():
             self.__list_brokers()
             self.__print_menu()
         elif user_selection == '3':
+            self.__add_topic()
+            self.__print_menu()
+        elif user_selection == '4':
             self.__stop()
         else:
             print('Wrong input \n')

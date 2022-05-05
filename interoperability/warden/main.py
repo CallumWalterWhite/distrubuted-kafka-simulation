@@ -1,10 +1,9 @@
 import sys, os
-
-from interoperability.warden.controller import Controller
-from interoperability.warden.commands import Command
-from interoperability.warden.config import DEFAULT_PORT, DEFAULT_NAME
-from interoperability.core import TCPServe
+from interoperability.core.protocol.tcp.serve import TCPServe
 from interoperability.persistence.persistence_provider import PersistenceProvider
+from interoperability.warden.commands import Command
+from interoperability.warden.config import DEFAULT_NAME, DEFAULT_PORT
+from interoperability.warden.controller import Controller
 from interoperability.warden.service import Service
 
 def start_warden():

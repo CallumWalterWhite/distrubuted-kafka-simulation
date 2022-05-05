@@ -9,14 +9,19 @@ class BrokerController():
     def __init__(self, service: BrokerService):
         self.__service = service
 
-    def add_topic(self, body):
-        data = json.loads(body[1:-1])
-        name = data['name']
-        id = uuid4()
-        return self.__service.add_topic(name)
-
-    def add_message(self, body):
-        data = json.loads(body[1:-1])
+    def add_message(self, data):
         id = UUID(data['id'])
         message = data['message']
         return self.__service.add_message(id, message)
+        
+    def get_messages(self, data):
+        id = UUID(data['id'])
+        return self.__service.get_messages(id)
+
+    def add_topic(self, data):
+        id = UUID(data['id'])
+        name = data['name']
+        self.__service.add_topic(id, name)
+        return {
+            'isDone': True
+        }

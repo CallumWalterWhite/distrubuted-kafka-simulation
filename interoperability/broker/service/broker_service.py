@@ -18,15 +18,19 @@ class BrokerService():
         return self.__get_topic(id)
         
     def get_topic(self, id):
-        return self.__get_topic(UUID(id))
+        return self.__get_topic(id)
         
     def get_messages(self, id):
-        return self.__get_topic_messages(UUID(id))
+        return self.__get_topic_messages(id)
 
     def add_message(self, id, message):
         topic: Topic = self.__broker.get_topic(id)
         topic.add_message(message)
         return self.__get_topic_messages(id)
+
+    def add_topic(self, id, name):
+        topic: Topic = Topic(id, name)
+        self.__broker.add_topic(topic)
 
     def __get_topic(self, id: UUID):
         topic: Topic = self.__broker.get_topic(id)

@@ -2,7 +2,7 @@ from http.client import UnknownProtocol
 import json
 import os
 from http.server import BaseHTTPRequestHandler
-from core.uris.identifier import URIIdentifier
+from uris.identifier import URIIdentifier
 
 class HttpRequestHandler(BaseHTTPRequestHandler):
     def __init__(self, *args, directory=None, **kwargs):

@@ -1,16 +1,16 @@
 from uuid import UUID
-from config import WARDEN_PORT, WARDEN_ADDRESS
+from config import WARDEN_PORT, WARDEN_ADDRESS, DEFAULT_PORT
 import socket, json
-from core import Message
+from core import Message, REGISTER_BROKER
 
 class WardenRegister():
     def register(port):
         BUFFER_SIZE=1024
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect((WARDEN_ADDRESS, WARDEN_PORT))
-            message : Message = Message('register_broker', {
+            message : Message = Message(REGISTER_BROKER, {
                 "port": port,
-                "address": "127.0.0.1"
+                "address": DEFAULT_PORT
             })
             s.sendall(message.toJSON().encode())
             data = s.recv(BUFFER_SIZE)

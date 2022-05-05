@@ -3,7 +3,7 @@ from http.client import UnknownProtocol
 import json
 from ..model.message import Message
 import socketserver
-from core.uris.identifier import URIIdentifier
+from uris.identifier import URIIdentifier
 
 class TcpRequestHandler(socketserver.BaseRequestHandler):
     __BUFFER_SIZE=1024
