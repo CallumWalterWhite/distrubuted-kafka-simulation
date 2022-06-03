@@ -4,7 +4,7 @@ from topic.topic import Topic
 from persistence import Repository
 import socket
 from config import WARDEN_PORT, WARDEN_ADDRESS, BUFFER_SIZE
-from core import Message, GET_CONSUMER_GROUP_OFFSET
+from core import Message, GET_CONSUMER_GROUP_OFFSET, SET_CONSUMER_GROUP_OFFSET
 import json
 
 class BrokerService():
@@ -68,7 +68,7 @@ class BrokerService():
     def __set_consumer_group_offset(self, topic_id, consumer_group_name, offset):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect((WARDEN_ADDRESS, WARDEN_PORT))
-            message : Message = Message(GET_CONSUMER_GROUP_OFFSET, {
+            message : Message = Message(SET_CONSUMER_GROUP_OFFSET, {
                 "topic_id": str(topic_id),
                 "broker_id": str(self.__broker.id),
                 "consumer_group_name": consumer_group_name,

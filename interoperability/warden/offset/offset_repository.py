@@ -36,25 +36,25 @@ class OffsetRepository():
     
     def get_consumer_group_by_name(self, consumer_group_name):
         cur = self.__conn.cursor()
-        cur.execute("SELECT ID, NAME FROM CONSUMER_GROUP WHERE name = ?", (consumer_group_name))
+        cur.execute("SELECT * FROM CONSUMER_GROUP WHERE NAME=?", (consumer_group_name,))
         return cur.fetchone()
     
     def add_consumer_group(self, id, name):
-        self.__conn.execute(f"INSERT INTO TOPIC (ID,NAME) \
+        self.__conn.execute(f"INSERT INTO CONSUMER_GROUP (ID,NAME) \
             VALUES ('{id}', '{name}')")
         self.__conn.commit()
 
     def add_offset(self, position, partition_id, consumer_group_id):
-        self.__conn.execute(f"INSERT INTO OFFSET (ID, POSITION, PARTITION_ID, CONSUMER_GROUP_ID) \
+        self.__conn.execute(f"INSERT INTO OFFSET (POSITION, PARTITION_ID, CONSUMER_GROUP_ID) \
             VALUES ({position}, '{partition_id}', '{consumer_group_id}')")
         self.__conn.commit()
     
     def update_offset(self, position, partition_id, consumer_group_id):
-        #update offset
         self.__conn.execute(f"UPDATE OFFSET SET POSITION = {position} WHERE CONSUMER_GROUP_ID = '{consumer_group_id}' AND PARTITION_ID = '{partition_id}'")
+        self.__conn.commit()
     
     def get_consumer_group_offset(self, partition_id, consumer_group_id):
         cur = self.__conn.cursor()
-        cur.execute("SELECT ID, NAME FROM OFFSET WHERE CONSUMER_GROUP_ID = ? AND PARTITION_ID = ?", (consumer_group_id, partition_id))
+        cur.execute("SELECT * FROM OFFSET WHERE CONSUMER_GROUP_ID = ? AND PARTITION_ID = ?", (consumer_group_id, partition_id,))
         return cur.fetchone()
         

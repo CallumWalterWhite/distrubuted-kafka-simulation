@@ -54,20 +54,19 @@ class Service():
     def get_partition_offset_by_consumer_group(self, topic_id, broker_id, consumer_group_name):
         #TODO: update controllers to only use ids to request
         partition = self.__repo.get_partition_by_broker_and_topic(broker_id, topic_id)
-        print(consumer_group_name)
         consumer_group = self.__offset_repository.get_consumer_group_by_name(consumer_group_name)
-        print(consumer_group)
-        offset = self.__offset_repository.get_consumer_group_offset(consumer_group[0], partition[0])
-        print(offset)
-        if offset is not None:
+        offset = self.__offset_repository.get_consumer_group_offset(partition[0], consumer_group[0])
+        if offset is None:
             self.__offset_repository.add_offset(0, partition[0], consumer_group[0])
-            offset = self.__offset_repository.get_consumer_group_offset(consumer_group[0], partition[0])
+            offset = self.__offset_repository.get_consumer_group_offset(partition[0], consumer_group[0])
         return offset[2]
 
 
     def set_partition_offset_by_consumer_group(self, topic_id, broker_id, consumer_group_name, offset):
         #TODO: update controllers to only use ids to request
-        self.__offset_repository.update_offset(offset, topic_id, broker_id, consumer_group_name)
+        partition = self.__repo.get_partition_by_broker_and_topic(broker_id, topic_id)
+        consumer_group = self.__offset_repository.get_consumer_group_by_name(consumer_group_name)
+        self.__offset_repository.update_offset(offset, partition[0], consumer_group[0])
         return offset
 
     def cluster_info(self, consumer_group_name):
