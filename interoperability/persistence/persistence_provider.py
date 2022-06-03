@@ -16,6 +16,9 @@ class PersistenceProvider:
 
     def initailzeRepo(conn, repo: Repository):
         PersistenceProvider.create_broker_table(conn)
+        PersistenceProvider.create_topic_table(conn)
+        PersistenceProvider.create_partition_table(conn)
+        PersistenceProvider.create_partition_broker_table(conn)
         
     def create_broker_table(conn):
         try:   
@@ -26,18 +29,36 @@ class PersistenceProvider:
             conn.commit()
         except:
             print('Table already exist... \n')
-            PersistenceProvider.delete_broker_table(conn)
+            PersistenceProvider.truncate_broker_table(conn)
 
-    def delete_broker_table(conn):
+    def truncate_broker_table(conn):
             conn.execute('DELETE FROM BROKER')
             conn.commit()
-            
+    
     def create_topic_table(conn):
         try:   
             conn.execute('''CREATE TABLE TOPIC
                     (ID INT PRIMARY KEY     NOT NULL,
-                    ADDRESS           TEXT    NOT NULL,
-                    PORT        INT NOT NULL);''')
+                    NAME NVARCHAR(255) NOT NULL);''')
+            conn.commit()
+        except:
+            print('Table already exist... \n')
+
+    def create_partition_table(conn):
+        try:   
+            conn.execute('''CREATE TABLE PARTITION
+                    (ID INT PRIMARY KEY     NOT NULL,
+                    TOPIC_ID INT NOT NULL);''')
+            conn.commit()
+        except:
+            print('Table already exist... \n')
+            
+    def create_partition_broker_table(conn):
+        try:   
+            conn.execute('''CREATE TABLE PARTITION_BROKER
+                    (PARTITION_ID INT NOT NULL,
+                    BROKER_ID INT NOT NULL,
+                    LEADER BIT NOT NULL);''')
             conn.commit()
         except:
             print('Table already exist... \n')

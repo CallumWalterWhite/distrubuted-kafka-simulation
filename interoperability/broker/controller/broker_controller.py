@@ -16,7 +16,8 @@ class BrokerController():
         
     def get_messages(self, data):
         id = UUID(data['id'])
-        return self.__service.get_messages(id)
+        consumer_group_name = data['consumer_group_name']
+        return self.__service.get_messages(id, consumer_group_name)
 
     def add_topic(self, data):
         id = UUID(data['id'])

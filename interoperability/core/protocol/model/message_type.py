@@ -1,7 +1,7 @@
-from atexit import register
-
-
 REGISTER_BROKER='register_broker'
 ADD_TOPIC='add_topic'
 ADD_MEESAGE='add_message'
 GET_MEESAGES='get_messages'
+GET_CLUSTER_INFO='get_cluster_info'
+GET_CONSUMER_GROUP_OFFSET='get_consumer_group_offset'
+SET_CONSUMER_GROUP_OFFSET='set_consumer_group_offset'

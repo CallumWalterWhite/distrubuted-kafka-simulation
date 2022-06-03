@@ -6,31 +6,21 @@ from topic.partition.partition import Partition
 class Topic():
     id: UUID
     name: str
-    __partitions: array
+    __partition: Partition
 
     def __init__(self, id: UUID, name: str):
         self.id = id
         self.name = name
-        self.__partitions = []
-        #DEFAULT PARTITION
-        partition: Partition = Partition(uuid4())
-        partition.set_leader(True)
-        self.add_partition(partition)
-        
-    def add_partition(self, partition: Partition):
-        self.__partitions.append(partition)
-
+        self.__partition = Partition(uuid4())
+    
     def add_message(self, body):
-        partition: Partition = self.__load_round_robin()
-        partition.add_message(body)
+        self.__partition.add_message(body)
 
-    def __load_round_robin(self):
-        sortedList = sorted(self.__partitions, key=lambda x: x.size(), reverse=True)
-        return sortedList[0]
+    def get_partition_size(self):
+        return self.__partition.size() 
 
-    def get_messages(self):
-        partition: Partition = self.__load_round_robin()
-        return partition.get_messages(0, partition.size())
+    def get_messages(self, offset):
+        return self.__partition.get_messages(offset, self.get_partition_size())
 
     def to_object(self):
         return {
