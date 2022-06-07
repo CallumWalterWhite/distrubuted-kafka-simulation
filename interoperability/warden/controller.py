@@ -14,7 +14,6 @@ class Controller():
             "id": str(id)
         }
 
-    
     def add_consumer_group(self, body):
         return {
             "id": str(self.__service.add_consumer_group(body['consumer_group_name']))
@@ -22,6 +21,11 @@ class Controller():
         
     def get_cluster_info(self, body):
         return self.__service.cluster_info()
+    
+    def health_check(self, body):
+        return {
+            "status": "ok"
+        }
     
     def get_consumer_group_offset(self, body):
         return {
