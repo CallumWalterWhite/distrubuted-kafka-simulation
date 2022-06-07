@@ -6,8 +6,6 @@ sys.path.append(f"{os.getcwd()}/interoperability/core")
 sys.path.append(f"{os.getcwd()}/interoperability")
 from core import (Message, GET_CLUSTER_INFO, ADD_MEESAGE)
 from config import *
-
-from config import *
 from publisher import Publisher
 
 def main():

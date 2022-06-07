@@ -12,7 +12,7 @@ def main(composite=True):
         service = BrokerService(broker)
         controller = BrokerController(service)
         broker.assign_handler(controller)
-        d = input("Press any key to close broker...")
+        input("Press any key to close broker...")
         broker.close()
         
 
