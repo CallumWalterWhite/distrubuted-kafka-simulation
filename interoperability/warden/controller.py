@@ -13,16 +13,22 @@ class Controller():
         return {
             "id": str(id)
         }
+
+    
+    def add_consumer_group(self, body):
+        return {
+            "id": str(self.__service.add_consumer_group(body['consumer_group_name']))
+        }
         
     def get_cluster_info(self, body):
-        return self.__service.cluster_info(body['consumer_group_name'])
+        return self.__service.cluster_info()
     
     def get_consumer_group_offset(self, body):
         return {
-            "offset": self.__service.get_partition_offset_by_consumer_group(body['topic_id'], body['broker_id'], body['consumer_group_name'])
+            "offset": self.__service.get_partition_offset_by_consumer_group(body['partition_id'], body['broker_id'], body['consumer_group_id'])
         }
     
     def set_consumer_group_offset(self, body):
         return {
-            "offset": self.__service.set_partition_offset_by_consumer_group(body['topic_id'], body['broker_id'], body['consumer_group_name'], body['offset'])
+            "offset": self.__service.set_partition_offset_by_consumer_group(body['partition_id'], body['broker_id'], body['consumer_group_id'], body['offset'])
         }

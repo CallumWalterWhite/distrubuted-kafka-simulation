@@ -27,4 +27,7 @@ class Broker():
         self.topics.append(topic)
 
     def get_topic(self, id):
-        return [x for x in self.topics if x.id == id][0]
+        topics = [x for x in self.topics if x.id == id]
+        if len(topics) == 0:
+            return None
+        return topics[0]

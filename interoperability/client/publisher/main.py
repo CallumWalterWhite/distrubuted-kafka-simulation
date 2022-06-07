@@ -7,40 +7,21 @@ sys.path.append(f"{os.getcwd()}/interoperability")
 from core import (Message, GET_CLUSTER_INFO, ADD_MEESAGE)
 from config import *
 
+from config import *
+from publisher import Publisher
+
 def main():
-    cluster_info = get_cluster_info('test')
+    publisher: Publisher = Publisher()
+    topics = publisher.get_topics()
     index = 1
-    for info in cluster_info:
+    for info in topics:
         print(f'{index}. {info["topic"]}')
         index += 1
-    selection = int(input("Please select a topic..."))
-    topic_broker = cluster_info[selection - 1]
-    message=input("Please enter a message...")
-    for i in range(1000):
-        add_message(topic_broker['topic_id'], topic_broker['broker_address'], int(topic_broker['broker_port']), message)
-
-def get_cluster_info(consumer_group_name):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((CLUSTER_ADDRESS, CLUSTER_WARDEN_PORT))
-        message : Message = Message(GET_CLUSTER_INFO, {
-            "consumer_group_name": consumer_group_name
-        })
-        json_data = message.toJSON().encode()
-        s.sendall(json_data)
-        data = s.recv(BUFFER_SIZE)
-        return json.loads(str(data.decode("utf-8")))
-    
-def add_message(topic_id, address, port, topic_message):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((address, port))
-        message : Message = Message(ADD_MEESAGE, {
-            "id": topic_id,
-            "message": topic_message
-        })
-        json_data = message.toJSON().encode()
-        s.sendall(json_data)
-        data = s.recv(BUFFER_SIZE)
-        json_data = str(data.decode("utf-8"))
+    selection = int(input("Please select a topic... \n"))
+    topic_id = topics[selection - 1]["topic_id"]
+    message=input("Please enter a message... \n")
+    n = int(input("Please the amount of times you want the message to send... \n"))
+    publisher.publish(topic_id, message, n)
 
 if __name__ == '__main__':
     main()

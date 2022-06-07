@@ -10,19 +10,31 @@ class BrokerController():
         self.__service = service
 
     def add_message(self, data):
-        id = UUID(data['id'])
+        topic_id = UUID(data['topic_id'])
+        partition_id = UUID(data['partition_id'])
         message = data['message']
-        return self.__service.add_message(id, message)
+        return {
+            'isDone': self.__service.add_message(topic_id, partition_id, message)
+        }
         
     def get_messages(self, data):
         id = UUID(data['id'])
-        consumer_group_name = data['consumer_group_name']
-        return self.__service.get_messages(id, consumer_group_name)
+        consumer_group_id = UUID(data['consumer_group_id'])
+        return {
+            'messages': self.__service.get_messages(id, consumer_group_id)
+        }
 
     def add_topic(self, data):
         id = UUID(data['id'])
         name = data['name']
-        self.__service.add_topic(id, name)
         return {
-            'isDone': True
+            'isDone': self.__service.add_topic(id, name)
+        }
+    
+    def add_partition(self, data):
+        id = UUID(data['id'])
+        topic_id = UUID(data['topic_id'])
+        leader = bool(data['leader'])
+        return {
+            'isDone': self.__service.add_partition(topic_id, id, leader)
         }

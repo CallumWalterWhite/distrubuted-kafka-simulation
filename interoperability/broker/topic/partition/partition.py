@@ -6,9 +6,9 @@ class Partition():
     id: UUID
     __leader: bool
     __queue: array
-    def __init__(self, id: UUID):
+    def __init__(self, id: UUID, leader: bool):
         self.id = id
-        self.__leader = False
+        self.__leader = leader
         self.__queue = []
 
     def set_leader(self, lead):

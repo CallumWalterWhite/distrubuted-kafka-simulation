@@ -44,7 +44,6 @@ class HttpRequestHandler(BaseHTTPRequestHandler):
         self.path = path.lstrip("/")
         self.method = method
         self.headers = headers
-        print(self.headers)
         self.body = body
         uri_request = ''
         parameter = ''
