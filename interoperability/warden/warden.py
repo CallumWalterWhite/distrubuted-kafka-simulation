@@ -3,7 +3,7 @@ import array
 from threading import Thread
 import asyncio
 from interoperability.warden.config import *
-from interoperability.broker import Broker
+from interoperability.broker.broker import Broker
 from interoperability.broker.controller.broker_controller import BrokerController
 from interoperability.broker.service.broker_service import BrokerService
 from interoperability.core.protocol.tcp.serve import TCPServe
@@ -105,8 +105,8 @@ class Warden():
         print('-----------------------------------')
 
     def __list_consumes(self):
-        for consumer in self.__consumers:
-            print(f"{consumer.get_consumer_group_id()} - {consumer.get_consumer_group_name()}" + '\n')
+        for consumer in self.__service.list_consumer_groups():
+            print(f"{consumer[0]} - {consumer[1]}" + '\n')
             
     def __list_topics(self):
         topics = self.__service.list_topics()

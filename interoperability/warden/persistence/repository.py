@@ -53,6 +53,11 @@ class Repository():
         cur = self.__conn.cursor()
         cur.execute("SELECT * FROM TOPIC")
         return cur.fetchall()
+    
+    def list_consumer_groups(self):
+        cur = self.__conn.cursor()
+        cur.execute("SELECT * FROM CONSUMER_GROUP")
+        return cur.fetchall()
 
     def list_partitions(self):
         cur = self.__conn.cursor()

@@ -13,7 +13,7 @@ class Controller():
     def register_broker(self, body):
         id = None
         try:
-            id = uuid4()
+            id = str(uuid4())
             self.__service.add_broker(id, body['address'], body['port'])
         except Exception as e:
             self.__exception_manager.handle(e)

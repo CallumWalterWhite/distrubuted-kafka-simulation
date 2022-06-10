@@ -14,6 +14,7 @@ class Sender():
                 json_data = message.toJSON().encode()
                 s.sendall(json_data)
                 data = s.recv(self.buffer_size)
+                print(data.decode(self.decoder))
                 json_data = str(data.decode(self.decoder))
                 response_object = json.loads(json_data)
                 if response_object['status_code'] == 200:

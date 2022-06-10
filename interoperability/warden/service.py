@@ -14,6 +14,9 @@ class Service():
         
     def list_brokers(self):
         return self.__repo.list_brokers()
+    
+    def list_consumer_groups(self):
+        return self.__repo.list_consumer_groups()
         
     def list_topics(self):
         return self.__repo.list_topics()

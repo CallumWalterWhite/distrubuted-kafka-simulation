@@ -1,5 +1,6 @@
 REGISTER_BROKER='register_broker'
 ADD_TOPIC='add_topic'
+GET_TOPICS='get_topics'
 ADD_MEESAGE='add_message'
 GET_MEESAGES='get_messages'
 GET_CLUSTER_INFO='get_cluster_info'

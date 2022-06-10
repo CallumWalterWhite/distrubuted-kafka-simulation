@@ -1,15 +1,28 @@
 import asyncio
 import sys, os
 from threading import Thread
-import time
 sys.path.append(f"{os.getcwd()}/interoperability/core")
 sys.path.append(f"{os.getcwd()}/interoperability")
+sys.path.append(f"{os.getcwd()}/interoperability/client/publisher")
 from core import *
 from config import *
 
 class Publisher():
     def __init__(self):
         self.__cluster_info = self.__get_cluster_info()
+
+    def bootstrap_publisher():
+        publisher: Publisher = Publisher()
+        topics = publisher.get_topics()
+        index = 1
+        for info in topics:
+            print(f'{index}. {info["topic"]}')
+            index += 1
+        selection = int(input("Please select a topic... \n"))
+        topic_id = topics[selection - 1]["topic_id"]
+        message=input("Please enter a message... \n")
+        n = int(input("Please the amount of times you want the message to send... \n"))
+        publisher.publish(topic_id, message, n)
     
     def __get_cluster_info(self):
         sender: Sender = Sender(CLUSTER_ADDRESS, CLUSTER_WARDEN_PORT, BUFFER_SIZE)

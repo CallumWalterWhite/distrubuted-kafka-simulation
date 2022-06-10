@@ -1,8 +1,6 @@
 from uuid import uuid4, UUID
 from core.exception.exception_manager import ExceptionManager
 from service.broker_service import BrokerService
-import json
-
 
 class BrokerController():
     __service: BrokerService

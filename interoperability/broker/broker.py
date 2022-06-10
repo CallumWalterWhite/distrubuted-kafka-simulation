@@ -1,4 +1,7 @@
 import array, sys, os
+sys.path.append(f"{os.getcwd()}/interoperability/broker")
+sys.path.append(f"{os.getcwd()}/interoperability/core")
+sys.path.append(f"{os.getcwd()}/interoperability")
 from uuid import UUID
 from registry.warden_register import WardenRegister
 from registry.port_factory import PortFactory
