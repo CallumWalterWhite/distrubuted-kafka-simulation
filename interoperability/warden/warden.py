@@ -9,16 +9,23 @@ from interoperability.broker.service.broker_service import BrokerService
 from interoperability.core.protocol.tcp.serve import TCPServe
 from interoperability.warden.service import Service
 from interoperability.client.consumer.consumer import Consumer
+from warden.controller import Controller
+from warden.persistence.repository import Repository
 
-
-class Command():
+class Warden():
     __service: Service
     __tcp_serve: TCPServe
     __consumers: array
-    def __init__(self, tcp_serve: TCPServe, service: Service):
+    def __init__(self):
+        service = Service(Repository())
+        controller = Controller(service)
+        tcp_serve = TCPServe(DEFAULT_PORT, controller)
         self.__service = service
         self.__tcp_serve = tcp_serve
         self.__consumers = []
+        print('Welecome to warden, broker manager and register \n')
+        print(f'Starting TCP socket on port {DEFAULT_PORT} \n')
+        
         self.__print_menu()
 
     def __print_menu(self):
@@ -97,6 +104,15 @@ class Command():
         print('------- Consumer registerd  ------- \n')
         print('-----------------------------------')
 
+    def __list_consumes(self):
+        for consumer in self.__consumers:
+            print(f"{consumer.get_consumer_group_id()} - {consumer.get_consumer_group_name()}" + '\n')
+            
+    def __list_topics(self):
+        topics = self.__service.list_topics()
+        for topic in topics:
+            print(f"{topic[0]} - {topic[1]}" + '\n')
+
     def __command_factory(self, user_selection):
         if user_selection == '1':
             self.__start_broker()
@@ -107,8 +123,14 @@ class Command():
         elif user_selection == '3':
             self.__add_topic()
             self.__print_menu()
+        elif user_selection == '4':
+            self.__list_topics()
+            self.__print_menu()
         elif user_selection == '5':
             self.__start_consumer()
+            self.__print_menu()
+        elif user_selection == '6':
+            self.__list_consumes()
             self.__print_menu()
         elif user_selection == '7':
             self.__stop()

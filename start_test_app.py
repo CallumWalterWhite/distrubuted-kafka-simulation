@@ -1,8 +1,8 @@
-from interoperability.warden.warden import Warden
+from test_app.test_app import TestApp
 
 def main():
     try:
-        Warden()
+        TestApp()
     except Exception as ex:
         print('Caught this error: ' + repr(ex))
         print('Error has occured on warden thread, instance is stopping....')

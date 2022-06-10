@@ -13,6 +13,12 @@ class Consumer():
         self.__consumer_group_id = self.__add_consumer_group()
         self.__cluster_info = self.__get_cluster_info()
     
+    def get_consumer_group_name(self):
+        return self.__consumer_group_name
+    
+    def get_consumer_group_id(self):
+        return self.__consumer_group_id
+
     def __add_consumer_group(self):
         sender: Sender = Sender(self.__address, self.__port, BUFFER_SIZE)
         response = sender.send(Message(ADD_CONSUMER_GROUP, {

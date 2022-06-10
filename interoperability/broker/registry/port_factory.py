@@ -1,5 +1,4 @@
 from http.server import BaseHTTPRequestHandler
-import socket
 from socketserver import TCPServer
 from config import INITAL_PORT, FINAL_PORT
 

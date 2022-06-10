@@ -1,5 +1,3 @@
-import json
-import socket
 from uuid import uuid4
 from interoperability.core import Message, ADD_TOPIC, ADD_PARTITION, Sender
 from .persistence.repository import Repository
@@ -16,6 +14,9 @@ class Service():
         
     def list_brokers(self):
         return self.__repo.list_brokers()
+        
+    def list_topics(self):
+        return self.__repo.list_topics()
 
     def delete_all_brokers(self):
         self.__repo.delete_all_brokers()
