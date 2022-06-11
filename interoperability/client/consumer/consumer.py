@@ -61,12 +61,15 @@ class Consumer():
         topic_brokers = [x for x in self.__cluster_info if x["topic_id"] == topic_id]
         while(self.__stop is not True):
             for topic_broker in topic_brokers:
-                sender: Sender = Sender(topic_broker['broker_address'], int(topic_broker['broker_port']), BUFFER_SIZE)
-                response = sender.send(Message(GET_MEESAGES, {
-                    "id": topic_id,
-                    "consumer_group_id": self.__consumer_group_id
-                }))
-                if (len(response['messages']) > 0):
-                    print(self.__consumer_group_name)
-                    print(len(response['messages']))
+                try:
+                    sender: Sender = Sender(topic_broker['broker_address'], int(topic_broker['broker_port']), BUFFER_SIZE)
+                    response = sender.send(Message(GET_MEESAGES, {
+                        "id": topic_id,
+                        "consumer_group_id": self.__consumer_group_id
+                    }))
+                    if (len(response['messages']) > 0):
+                        print(self.__consumer_group_name)
+                        print(len(response['messages']))
+                except Exception as e:
+                    pass
             await asyncio.sleep(1)

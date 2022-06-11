@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
-from core.protocol.model.message_type import *
-from core.protocol.tcp.sender import Sender
+from interoperability.client.publisher.publisher import Publisher
+from .cluster_adapter import ClusterAdapter
 
 class WindowViewer():
     def __init__(self):
@@ -11,6 +11,7 @@ class WindowViewer():
         self.root.configure(background='lightblue')
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.root.bind('<Escape>', self.on_closing)
+        self.cluster_adapter = ClusterAdapter()
 
     def on_closing(self):
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
@@ -27,7 +28,7 @@ class WindowViewer():
         def __go_settings():
             self.settings()
         def __check_cluster_status():
-            msg = 'Cluster is running' if self.check_cluster_status() else 'Cluster is not running'
+            msg = 'Cluster is running' if self.cluster_adapter.check_cluster_status() else 'Cluster is not running'
             messagebox.showinfo(title='Status', message=msg)
         __createMenuOption("Stress tool", __go_stresser)
         self.default_blank_space()
@@ -83,36 +84,30 @@ class WindowViewer():
 
         frame = Frame(self.root)
         frame.pack(side="top")
-        cluster_info = self.get_cluster_info()
-        topics = self.get_topics(cluster_info)
+        topics = self.get_topics(self.cluster_adapter.get_cluster_info())
         Label(frame,text="Topic",width=20,font=("bold",10)).pack()
-        print(topics)
-        list_of_country=[ 'India' ,'US' , 'UK' ,'Germany' ,'Austria']
+        topic_list=[]
+        for topic in topics:
+            topic_list.append(topic["topic"])
         c=StringVar()
-        droplist=OptionMenu(frame,c, *list_of_country)
+        droplist=OptionMenu(frame,c, *topic_list)
         droplist.config(width=15)
         c.set('Choose a topic...')
         droplist.pack()
+        Label(frame,text="Message", width=20,font=("bold",10)).pack()
+        message_entry=Entry(frame)
+        message_entry.pack()
+        Label(frame,text="Amount to send", width=20,font=("bold",10)).pack()
+        amount_to_send_entry=Entry(frame)
+        amount_to_send_entry.pack()
 
-        label_0 =Label(frame,text="Stress tool", width=20,font=("bold",20)).pack()
-        label_1 =Label(frame,text="FullName", width=20,font=("bold",10)).pack()
-        entry_1=Entry(frame).pack()
-        label_3 =Label(frame,text="Email", width=20,font=("bold",10)).pack()
-        entry_3=Entry(frame).pack()
-        label_4 =Label(frame,text="Gender", width=20,font=("bold",10)).pack()
-        var=IntVar()
-        Radiobutton(frame,text="Male",padx= 5, variable= var, value=1).pack()
-        Radiobutton(frame,text="Female",padx= 20, variable= var, value=2).pack()
-        label_5=Label(frame,text="Country",width=20,font=("bold",10)).pack()
-        label_6=Label(frame,text="Language",width=20,font=('bold',10)).pack()
-        var1=IntVar()
-        Checkbutton(frame,text="English", variable=var1).pack()
+        def send_messages():
+            topic_id = [x for x in topics if x["topic"] == c.get()][0]["topic_id"]
+            message = message_entry.get()
+            amount_to_send = int(amount_to_send_entry.get())
+            self.publish_messages(topic_id, message, amount_to_send)
 
-
-        var2=IntVar()
-        Checkbutton(frame,text="German", variable=var2).pack()
-
-        Button(frame, text='Submit' , width=20,bg="black",fg='white').pack()
+        Button(frame, text='Send' , width=20,bg="black",fg='white',command=send_messages).pack()
         self.default_blank_space()
         
         self.root.mainloop() 
@@ -132,31 +127,13 @@ class WindowViewer():
     def reset(self):
         self.root.configure(background='lightblue')
 
-    def check_cluster_status(self):
-        try:
-            sender: Sender = Sender('127.0.0.1', 2500)
-            response = sender.send(Message(HEALTH_CHECK, {
-                }))
-            if response['status'] == 'ok':
-                return True
-        except:
-            return False
-        return False
-
-    def get_cluster_info(self):
-        cluster_info = None
-        try:
-            sender: Sender = Sender('127.0.0.1', 2500)
-            response = sender.send(Message(GET_CLUSTER_INFO, {
-                }))
-            cluster_info = response
-        except Exception as e:
-            print(e)
-        return cluster_info
-
     def get_topics(self, cluster_info):
         topics = [x["topic_id"] for x in cluster_info]
         unique_topics = []
         for topic in list(set(topics)):
             unique_topics.append([x for x in cluster_info if x["topic_id"] == topic][0])
         return unique_topics
+
+    def publish_messages(self, topic_id, message, number_of_times):
+        publisher: Publisher = Publisher()
+        publisher.publish(topic_id, message, number_of_times)
