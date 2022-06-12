@@ -55,10 +55,13 @@ class Publisher():
                     Thread(target=asyncio.run, args=(self.__add_message(topic_broker['topic_id'], topic_broker['partition_id'], topic_broker, topic_message),)).start()
 
     async def __add_message(self, topic_id, partition_id, broker, topic_message):
-        sender: Sender = Sender(broker['broker_address'], int(broker['broker_port']), BUFFER_SIZE)
-        response = await sender.send_async( Message(ADD_MEESAGE, {
-            "topic_id": topic_id,
-            "partition_id": partition_id,
-            "message": topic_message
-        }))
-        return response
+        try:
+            sender: Sender = Sender(broker['broker_address'], int(broker['broker_port']), BUFFER_SIZE)
+            response = await sender.send_async( Message(ADD_MEESAGE, {
+                "topic_id": topic_id,
+                "partition_id": partition_id,
+                "message": topic_message
+            }))
+            return response
+        except Exception as e:
+            print(e)
