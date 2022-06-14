@@ -24,6 +24,9 @@ class BrokerService():
         
     def get_messages(self, id, consumer_group_id):
         return self.__get_topic_messages(id, consumer_group_id)
+    
+    def get_all_messages(self, id):
+        return self.__get_all_topic_messages(id)
 
     def add_message(self, topic_id, partition_id, message):
         topic: Topic = self.__broker.get_topic(topic_id)
@@ -58,6 +61,15 @@ class BrokerService():
             messages = partition.get_messages(offset, partition_size)
             aggregate_messages = aggregate_messages + messages
             self.__set_consumer_group_offset(partition.id, consumer_group_id, partition_size)
+        return aggregate_messages
+    
+    def __get_all_topic_messages(self, id: UUID):
+        aggregate_messages = []
+        topic: Topic = self.__broker.get_topic(id)
+        for partition in topic.partitions:
+            partition_size = partition.size()
+            messages = partition.get_messages(0, partition_size)
+            aggregate_messages = aggregate_messages + messages
         return aggregate_messages
 
     def __get_consumer_group_offsets(self, partition_id, consumer_group_id):

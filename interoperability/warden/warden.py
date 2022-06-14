@@ -34,9 +34,10 @@ class Warden():
         print('2. List Brokers')
         print('3. Add topic')
         print('4. List topics')
-        print('5. Start Consumer')
-        print('6. List Consumers')
-        print('7. Stop warden')
+        print('5. View messages in topic')
+        print('6. Start Consumer')
+        print('7. List Consumers')
+        print('8. Stop warden')
         print('---------------------------------- \n')
         user_selection = input()
         self.__command_factory(user_selection)
@@ -112,6 +113,23 @@ class Warden():
         topics = self.__service.list_topics()
         for topic in topics:
             print(f"{topic[0]} - {topic[1]}" + '\n')
+    
+    def __view_topic_messages(self):
+        topics = self.__service.list_topics()
+        index = 1
+        for info in topics:
+            print(f'{index}. {info[1]}')
+            index += 1
+        selection = int(input("Please select a topic..."))
+        topic = topics[selection - 1]
+        cluster = self.__service.cluster_info()
+        topic_brokers = list(filter(lambda x: x['topic_id'] == topic[0], cluster))
+        messages = self.__service.get_topic_messages(topic_brokers)
+        print(f'------- Messages in {topic[1]}  ------- ' + '\n')
+        print(f'------- Warning!  ------- ' + '\n')
+        print(f'------- Messages not in order  ------- ' + '\n')
+        print(messages)
+        print('-----------------------------------')
 
     def __command_factory(self, user_selection):
         if user_selection == '1':
@@ -127,12 +145,15 @@ class Warden():
             self.__list_topics()
             self.__print_menu()
         elif user_selection == '5':
-            self.__start_consumer()
+            self.__view_topic_messages()
             self.__print_menu()
         elif user_selection == '6':
-            self.__list_consumes()
+            self.__start_consumer()
             self.__print_menu()
         elif user_selection == '7':
+            self.__list_consumes()
+            self.__print_menu()
+        elif user_selection == '8':
             self.__stop()
         else:
             print('Wrong input \n')

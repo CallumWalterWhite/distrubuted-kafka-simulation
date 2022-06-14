@@ -59,3 +59,14 @@ class BrokerController():
         return {
             "isDone": isDone
         }
+
+    def get_all_messages(self, data):
+        messages = []
+        try:
+            id = UUID(data['id'])
+            messages = self.__service.get_all_messages(id)
+        except Exception as e:
+            self.__exception_manager.handle(e)
+        return {
+            "messages": messages
+        }

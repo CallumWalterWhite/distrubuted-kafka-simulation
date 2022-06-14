@@ -1,5 +1,5 @@
 from uuid import uuid4
-from interoperability.core import Message, ADD_TOPIC, ADD_PARTITION, Sender
+from interoperability.core import Message, ADD_TOPIC, ADD_PARTITION, Sender, GET_ALL_MEESAGES
 from .persistence.repository import Repository
 from config import DEFAULT_REPLICATION_FACTOR
 
@@ -32,7 +32,7 @@ class Service():
     def add_topic(self, topic_name, number_of_partitions, replication_factor):
         topic_id = uuid4()
         brokers = self.list_brokers()
-        leader = True #UPDATE TO HAVE REPLICATION
+        leader = True
         if replication_factor == -1:
             replication_factor = DEFAULT_REPLICATION_FACTOR
         self.__repo.add_topic(topic_id, topic_name)
@@ -73,7 +73,6 @@ class Service():
             offset = self.__repo.get_consumer_group_offset(partition[0], consumer_group[0])
         return offset[2]
 
-
     def set_partition_offset_by_consumer_group(self, partition_id, broker_id, consumer_group_id, offset):
         partition = self.__repo.get_partition(partition_id)
         consumer_group = self.__repo.get_consumer_group(consumer_group_id)
@@ -106,10 +105,26 @@ class Service():
                                         "topic_id": topic[0],
                                         "partition_id": partition[0],
                                         "partition_leader": brokers_partition[2],
+                                        "broker_id": broker[0],
                                         "broker_address": broker[1], 
                                         "broker_port": broker[2]
                                     })
         return result
 
-        
-        
+    def get_topic_messages(self, topic_brokers):
+        topic_id = topic_brokers[0]["topic_id"]
+        brokers = self.__repo.list_brokers()
+        messages = []
+        print(brokers)
+        for broker in list({v['broker_id']:v for v in topic_brokers}.values()):
+            broker = list(filter(lambda x: x[0] == broker['broker_id'], brokers))[0]
+            address = broker[1]
+            port = broker[2]
+            sender: Sender = Sender(address, port)
+            response = sender.send(Message(GET_ALL_MEESAGES, {
+                    "id": str(topic_id)
+                }))
+            messages += response["messages"]
+        return messages 
+    
+    
