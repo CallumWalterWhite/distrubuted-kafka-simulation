@@ -1,10 +1,16 @@
+import asyncio
+from threading import Thread
 from tkinter import *
 from tkinter import messagebox
+from tkinter.ttk import Notebook
 from interoperability.client.publisher.publisher import Publisher
+from interoperability.client.consumer.consumer import Consumer
 from .cluster_adapter import ClusterAdapter
 
 class WindowViewer():
     def __init__(self):
+        self.warden_address = self.warden_address
+        self.warden_port = self.warden_port
         self.root = Tk()
         self.root.geometry("1920x1080")
         self.root.title("Test Application")
@@ -49,10 +55,10 @@ class WindowViewer():
         top_widget_frame.pack(side='left', anchor=NW)
         Button(top_widget_frame, text='Back', command=__go_home).pack()
         
-        self.default_blank_space()
-        Label(consumer_frame,text="Add Consumer - ", width=20,font=("bold",10)).pack()
         consumer_frame = Frame(self.root)
         consumer_frame.pack(side="top")
+        self.default_blank_space()
+        Label(consumer_frame,text="Add Consumer - ", width=20,font=("bold",10)).pack()
         Label(consumer_frame,text="Consumer group name", width=20,font=("bold",10)).pack()
         consumer_group_name_entry=Entry(consumer_frame)
         consumer_group_name_entry.pack()
@@ -105,11 +111,59 @@ class WindowViewer():
             topic_id = [x for x in topics if x["topic"] == c.get()][0]["topic_id"]
             message = message_entry.get()
             amount_to_send = int(amount_to_send_entry.get())
+            consumer1 = Consumer(self.warden_address, self.warden_port, "cg1")
+            consumer1.subscribe([topic_id], addMessageCg1)
+            consumer1_thread = Thread(target=asyncio.run, args=(consumer1.subscribe([topic_id], addMessageCg1),))
+            consumer1_thread.start()
+            consumer2 = Consumer(self.warden_address, self.warden_port, "cg2")
+            consumer2_thread = Thread(target=asyncio.run, args=(consumer2.subscribe([topic_id], addMessageCg2),))
+            consumer2_thread.start()
             self.publish_messages(topic_id, message, amount_to_send)
 
-        Button(frame, text='Send' , width=20,bg="black",fg='white',command=send_messages).pack()
+        Button(frame, text='Run test' , width=20,bg="black",fg='white',command=send_messages).pack()
         self.default_blank_space()
         
+        def addMessageCg1(messages):
+            for message in messages:
+                cg1Output.insert(1.0, message + "\n" )
+
+        def addMessageCg2(messages):
+            for message in messages:
+                cg2Output.insert(1.0, message + "\n" )
+
+        tabparent = Notebook(self.root)
+
+        cg1 = Frame(tabparent)
+        tabparent.add(cg1, text="Consumer group 1")
+        
+        cg2 = Frame(tabparent)
+        tabparent.add(cg2, text="Consumer group 2")
+
+        tabparent.pack(expand=1, fill='both')
+
+        cg1OutputScrollBar = Scrollbar(cg1, orient='vertical')
+        cg2OutputScrollBar = Scrollbar(cg2, orient='vertical')
+
+
+        cg1Output = Text(cg1, height = 30, width = 25, yscrollcommand=cg1OutputScrollBar.set)
+        cg1Output.pack(fill='both', expand=True, side=LEFT)
+        cg1Output.insert(1.0, "No Messages.")
+
+
+        cg2Output = Text(cg2, height = 30, width = 25, yscrollcommand=cg2OutputScrollBar.set)
+        cg2Output.pack(fill='both', expand=True, side=LEFT)
+        cg2Output.insert(1.0, "No Messages.")
+
+
+        cg1OutputScrollBar.pack(side=RIGHT, fill='y')
+        cg1OutputScrollBar.config(command=cg1Output.yview)
+
+
+        cg2OutputScrollBar.pack(side=RIGHT, fill='y')
+        cg2OutputScrollBar.config(command=cg2Output.yview)
+
+        timeResults = Entry(self.root, )
+
         self.root.mainloop() 
 
     def default_blank_space(self):
@@ -135,5 +189,5 @@ class WindowViewer():
         return unique_topics
 
     def publish_messages(self, topic_id, message, number_of_times):
-        publisher: Publisher = Publisher()
+        publisher: Publisher = Publisher(self.warden_address, self.warden_port)
         publisher.publish(topic_id, message, number_of_times)

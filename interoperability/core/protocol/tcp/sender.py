@@ -2,7 +2,7 @@ import socket
 import json
 
 class Sender():
-    def __init__(self, address, port, buffer_size=1024, decoder='UTF-8'):
+    def __init__(self, address, port, buffer_size=128000, decoder='UTF-8'):
         self.address = address
         self.port = port
         self.buffer_size = buffer_size

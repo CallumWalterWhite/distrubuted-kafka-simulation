@@ -44,7 +44,7 @@ class Consumer():
             except Exception as e:
                 print(e)
                 continue
-        consumer_thread = Thread(target=asyncio.run, args=(consumer.listen_to_cluster(topic_ids),))
+        consumer_thread = Thread(target=asyncio.run, args=(consumer.subscribe(topic_ids),))
         consumer_thread.start()
         return consumer
 
@@ -75,7 +75,7 @@ class Consumer():
             unique_topics.append([x for x in self.__cluster_info if x["topic_id"] == topic][0])
         return unique_topics
 
-    async def listen_to_cluster(self, topic_ids):
+    async def subscribe(self, topic_ids, callback=None):
         topic_brokers = [x for x in self.__cluster_info if x["topic_id"] in topic_ids]
         while(self.__stop is not True):
             for topic_broker in topic_brokers:
@@ -90,6 +90,8 @@ class Consumer():
                         print(f"Consumer group - {self.__consumer_group_name}")
                         print(f"Message Count - {len(response['messages'])}")
                         print(f"Messages - {response['messages']}")
+                        if (callback is not None):
+                            callback(response['messages'])
                 except Exception as e:
                     pass
             await asyncio.sleep(1)

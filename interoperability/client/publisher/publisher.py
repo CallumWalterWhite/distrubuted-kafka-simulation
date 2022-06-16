@@ -8,11 +8,13 @@ from core import *
 from config import *
 
 class Publisher():
-    def __init__(self):
+    def __init__(self, address, port):
+        self.__address = address
+        self.__port = port
         self.__cluster_info = self.__get_cluster_info()
 
     def bootstrap_publisher():
-        publisher: Publisher = Publisher()
+        publisher: Publisher = Publisher(CLUSTER_ADDRESS, CLUSTER_WARDEN_PORT)
         while True:
             topics = publisher.get_topics()
             index = 1
@@ -31,7 +33,7 @@ class Publisher():
                 break
     
     def __get_cluster_info(self):
-        sender: Sender = Sender(CLUSTER_ADDRESS, CLUSTER_WARDEN_PORT, BUFFER_SIZE)
+        sender: Sender = Sender(self.__address, self.__port, BUFFER_SIZE)
         return sender.send(Message(GET_CLUSTER_INFO, {}))
 
     def get_topics(self):
