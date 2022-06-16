@@ -35,9 +35,8 @@ class Warden():
         print('3. Add topic')
         print('4. List topics')
         print('5. View messages in topic')
-        print('6. Start Consumer')
-        print('7. List Consumers')
-        print('8. Stop warden')
+        print('6. List Consumers')
+        print('7. Stop warden')
         print('---------------------------------- \n')
         user_selection = input()
         self.__command_factory(user_selection)
@@ -70,7 +69,7 @@ class Warden():
         topic_name = input()
         print('Please enter number of partitions... \n')
         number_of_partitions = self.__get_number_input()
-        print('Please enter number of replication (-1 for default replication)... \n')
+        #print('Please enter number of replication (-1 for default replication)... \n')
         replication_factor = 0 #self.__get_number_input()
         #while(number_of_partitions >= len(brokers)):
         #    print('Please enter a replication factor which less than the amount of brokers... \n')
@@ -80,7 +79,7 @@ class Warden():
         if is_done:
             print(f'Topic added to brokers')
         else:
-            print(f'Error addoing topic to brokers')
+            print(f'Error adding topic to brokers')
         print('-----------------------------------')
 
     def __list_brokers(self):
@@ -90,7 +89,7 @@ class Warden():
     def __start_consumer(self):
         print('--------- Starting Consumer ---------')
         print('-----------------------------------')
-        consumer_group_name = input('Please enter consumer group name - ')
+        consumer_group_name = input('Please enter consumer group name...')
         consumer = Consumer(BROKER_LOCAL_IP, DEFAULT_PORT, consumer_group_name)
         self.__consumers.append(consumer)
         topics = consumer.get_topics()
@@ -148,12 +147,9 @@ class Warden():
             self.__view_topic_messages()
             self.__print_menu()
         elif user_selection == '6':
-            self.__start_consumer()
-            self.__print_menu()
-        elif user_selection == '7':
             self.__list_consumes()
             self.__print_menu()
-        elif user_selection == '8':
+        elif user_selection == '7':
             self.__stop()
         else:
             print('Wrong input \n')
