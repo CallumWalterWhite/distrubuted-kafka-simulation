@@ -1,3 +1,5 @@
+## @package Warden
+# warden.py
 from uuid import uuid4
 import array
 from threading import Thread
@@ -12,17 +14,27 @@ from interoperability.client.consumer.consumer import Consumer
 from warden.controller import Controller
 from warden.persistence.repository import Repository
 
+## Warden class.
+#  @author  Callum White
+#  @version 1.0
+#  @date    01/06/2022
+#  @bug     No known bugs.
+#  @todo    Add replication for partitions.
+#  
+#  create repository, broker, and controller
 class Warden():
+    ## Service variable
     __service: Service
-    __tcp_serve: TCPServe
-    __consumers: array
+    ## TCP instance variable
+    __tcp_serve: TCPServer
+
+    ## The Constructor
     def __init__(self):
         service = Service(Repository())
         controller = Controller(service)
         tcp_serve = TCPServe(DEFAULT_PORT, controller)
         self.__service = service
         self.__tcp_serve = tcp_serve
-        self.__consumers = []
         print('Welecome to warden, broker manager and register \n')
         print(f'Starting TCP socket on port {DEFAULT_PORT} \n')
         
@@ -91,7 +103,6 @@ class Warden():
         print('-----------------------------------')
         consumer_group_name = input('Please enter consumer group name...')
         consumer = Consumer(BROKER_LOCAL_IP, DEFAULT_PORT, consumer_group_name)
-        self.__consumers.append(consumer)
         topics = consumer.get_topics()
         index = 1
         for info in topics:
