@@ -1,5 +1,4 @@
-## @package Warden
-# warden.py
+
 from uuid import uuid4
 import array
 from threading import Thread
@@ -21,14 +20,18 @@ from warden.persistence.repository import Repository
 #  @bug     No known bugs.
 #  @todo    Add replication for partitions.
 #  
-#  create repository, broker, and controller
+#  @details This class is used to create a warden.
+#  The warden will manage the brokers, topics, and partitions.
 class Warden():
     ## Service variable
     __service: Service
     ## TCP instance variable
-    __tcp_serve: TCPServer
+    __tcp_serve: TCPServe
 
-    ## The Constructor
+    ## __init__ method.
+    #  @param self The object pointer.
+    #  @return None
+    #  @details Constructor for the Warden class.
     def __init__(self):
         service = Service(Repository())
         controller = Controller(service)
@@ -40,6 +43,9 @@ class Warden():
         
         self.__print_menu()
 
+    ## __print_menu method.
+    #  @param self The object pointer.
+    #  @details Prints the menu.
     def __print_menu(self):
         print('---------------------------------- ')
         print('1. Start Broker')
@@ -53,6 +59,9 @@ class Warden():
         user_selection = input()
         self.__command_factory(user_selection)
 
+    ## __start_broker method:
+    # @param self The object pointer.
+    # @details Starts a broker and adds it to the service.
     def __start_broker(self):
         print('--------- Starting broker ---------')
         print('-----------------------------------')
@@ -65,11 +74,17 @@ class Warden():
         self.__service.add_broker(broker.id, BROKER_LOCAL_IP, broker.port)
         print('--------- Broker registerd -------- \n')
         print('-----------------------------------')
-
+    
+    ## __stop method
+    #  @param self The object pointer.
+    #  @details Stops the warden and deletes all brokers.
     def __stop(self):
         self.__service.delete_all_brokers()
         self.__tcp_serve.close()
-
+    
+    ## __add_topic method
+    #  @param self The object pointer.
+    #  @details Registers a topic and number of partitions and adds it to the service.
     def __add_topic(self):
         print('---------- Adding topic -----------')
         print('-----------------------------------')
@@ -81,11 +96,9 @@ class Warden():
         topic_name = input()
         print('Please enter number of partitions... \n')
         number_of_partitions = self.__get_number_input()
-        #print('Please enter number of replication (-1 for default replication)... \n')
-        replication_factor = 0 #self.__get_number_input()
-        #while(number_of_partitions >= len(brokers)):
-        #    print('Please enter a replication factor which less than the amount of brokers... \n')
-        #    replication_factor = self.__get_number_input()
+        
+        #TODO: Add replication for partitions.
+        replication_factor = 0
     
         is_done = self.__service.add_topic(topic_name, number_of_partitions, replication_factor)
         if is_done:
@@ -94,36 +107,31 @@ class Warden():
             print(f'Error adding topic to brokers')
         print('-----------------------------------')
 
+    ## __list_brokers method
+    #  @param self The object pointer.
+    #  @details Lists all brokers.
     def __list_brokers(self):
         for row in self.__service.list_brokers():
             print(row)
 
-    def __start_consumer(self):
-        print('--------- Starting Consumer ---------')
-        print('-----------------------------------')
-        consumer_group_name = input('Please enter consumer group name...')
-        consumer = Consumer(BROKER_LOCAL_IP, DEFAULT_PORT, consumer_group_name)
-        topics = consumer.get_topics()
-        index = 1
-        for info in topics:
-            print(f'{index}. {info["topic"]}')
-            index += 1
-        selection = int(input("Please select a topic..."))
-        topic_broker = topics[selection - 1]
-        consumer_thread = Thread(target=asyncio.run, args=(consumer.listen_to_cluster(topic_broker['topic_id']),))
-        consumer_thread.start()
-        print('------- Consumer registerd  ------- \n')
-        print('-----------------------------------')
-
+    ## __list_consumes method
+    #  @param self The object pointer.
+    #  @details Lists all consumers.
     def __list_consumes(self):
         for consumer in self.__service.list_consumer_groups():
             print(f"{consumer[0]} - {consumer[1]}" + '\n')
-            
+    
+    ## __list_topics method
+    #  @param self The object pointer.
+    #  @details Lists all topics.
     def __list_topics(self):
         topics = self.__service.list_topics()
         for topic in topics:
             print(f"{topic[0]} - {topic[1]}" + '\n')
     
+    ## __view_topic_messages method
+    #  @param self The object pointer.
+    #  @details Lists all messages in a topic.
     def __view_topic_messages(self):
         topics = self.__service.list_topics()
         index = 1
@@ -141,6 +149,10 @@ class Warden():
         print(messages)
         print('-----------------------------------')
 
+    ## __command_factory method
+    #  @param self The object pointer.
+    #  @param user_selection The user selection.
+    #  @details Creates a command based on the user selection.
     def __command_factory(self, user_selection):
         if user_selection == '1':
             self.__start_broker()
@@ -166,6 +178,9 @@ class Warden():
             print('Wrong input \n')
             self.__print_menu()
 
+    ## __get_number_input method
+    #  @param self The object pointer.
+    #  @details Gets a number input from the user.
     def __get_number_input(self):
         user_input = input()
         try:

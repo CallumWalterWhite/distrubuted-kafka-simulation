@@ -1,3 +1,10 @@
+## message_type.py
+#  @author  Callum White
+#  @version 1.0
+#  @date    01/06/2022
+#  @bug     No known bugs.
+#  
+#  @details This file is used to provide a message type for the message class.
 REGISTER_BROKER='register_broker'
 ADD_TOPIC='add_topic'
 GET_TOPICS='get_topics'

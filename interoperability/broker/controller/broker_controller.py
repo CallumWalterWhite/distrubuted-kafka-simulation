@@ -2,14 +2,28 @@ from uuid import uuid4, UUID
 from core.exception.exception_manager import ExceptionManager
 from service.broker_service import BrokerService
 
+## BrokerController class.
+#  @author  Callum White
+#  @version 1.0
+#  @date    01/06/2022
+#  @bug     No known bugs.
+#  
+#  @details This class is used to create a controller object for the broker.
+#  This is the entry point of the tcp server requests.
 class BrokerController():
     __service: BrokerService
     __exception_manager: ExceptionManager
 
+    ## __init__ method.
+    # @param self The object pointer.
+    # @param service The service object.
     def __init__(self, service: BrokerService):
         self.__service = service
         self.__exception_manager = ExceptionManager()
 
+    ## add_message method.
+    # @param self The object pointer.
+    # @param body The body of the request.
     def add_message(self, data):
         isDone = False
         try:
@@ -23,6 +37,9 @@ class BrokerController():
             "isDone": isDone
         }
         
+    ## get_messages method.
+    # @param self The object pointer.
+    # @param body The body of the request.
     def get_messages(self, data):
         messages = []
         try:
@@ -35,6 +52,9 @@ class BrokerController():
             "messages": messages
         }
 
+    ## add_topic method.
+    # @param self The object pointer.
+    # @param body The body of the request.
     def add_topic(self, data):
         isDone = False
         try:
@@ -47,6 +67,9 @@ class BrokerController():
             "isDone": isDone
         }
     
+    ## add_partition method.
+    # @param self The object pointer.
+    # @param body The body of the request.
     def add_partition(self, data):
         isDone = False
         try:
@@ -60,6 +83,9 @@ class BrokerController():
             "isDone": isDone
         }
 
+    ## get_all_messages method.
+    # @param self The object pointer.
+    # @param body The body of the request.
     def get_all_messages(self, data):
         messages = []
         try:

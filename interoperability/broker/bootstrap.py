@@ -6,6 +6,13 @@ from service.broker_service import BrokerService
 from broker import Broker
 from controller.broker_controller import BrokerController
 
+## Warden Broker class.
+#  @author  Callum White
+#  @version 1.0
+#  @date    01/06/2022
+#  @bug     No known bugs.
+#  
+#  @details This class is used to create a broker.
 class BrokerBootstrap():
     def start_broker():
         broker = Broker()

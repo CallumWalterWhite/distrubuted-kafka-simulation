@@ -2,6 +2,13 @@ from http.server import BaseHTTPRequestHandler
 from socketserver import TCPServer
 from config import INITAL_PORT, FINAL_PORT
 
+## PortFactory class.
+#  @author  Callum White
+#  @version 1.0
+#  @date    01/06/2022
+#  @bug     No known bugs.
+#  
+#  @details This class retries ports ranging from 2700 to 3000 until it finds one that is available.
 class PortFactory():
     __local_used_ports = []
     def get_first_available_port(initial:int = INITAL_PORT, final:int = FINAL_PORT) -> int:
