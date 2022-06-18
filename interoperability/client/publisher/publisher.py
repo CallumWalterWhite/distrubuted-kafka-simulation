@@ -43,7 +43,7 @@ class Publisher():
             n = int(input("Please the number of times you want the message to send... \n"))
             publisher.publish(topic_id, message, n)
             print('Messages pushed to brokers... \n')
-            print('Press any q to quit...')
+            print('Press q to quit...')
             x = input()
             if x == 'q':
                 break

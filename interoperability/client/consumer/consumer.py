@@ -133,6 +133,6 @@ class Consumer():
                     except Exception as e:
                         pass
                 # sleep for a second before pulling messages again
-                await asyncio.sleep(1)
+                await asyncio.sleep(0.5)
         except Exception as e:
             self.__exception_manager.handle(e)
