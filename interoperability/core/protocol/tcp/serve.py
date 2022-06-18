@@ -44,7 +44,8 @@ class TCPServe():
             try:
                 await self.__httpd.serve_forever()
             except Exception as e:
-                self.__exception_manager.handle(e)
+                self.__exception_manager.handle_exception(e)
+                self.__httpd.shutdown()
     
     ## close method.
     #  @param self The object pointer.
