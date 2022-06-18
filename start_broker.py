@@ -1,15 +1,4 @@
 from interoperability.broker.bootstrap import BrokerBootstrap
-
-"""@package Broker
-Start broker.
- @author  Callum White
- @version 1.0
- @date    01/06/2022
- @bug     No known bugs.
- @todo    Add replication for partitions.
- 
- @detail - starts up a broker instance
-"""
 def main():
     try:
         BrokerBootstrap.start_broker()

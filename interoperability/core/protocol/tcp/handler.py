@@ -14,7 +14,7 @@ from uris.identifier import URIIdentifier
 #  Inherits from socketserver.BaseRequestHandler.
 class TcpRequestHandler(socketserver.BaseRequestHandler):
     ## buffer size variable
-    __BUFFER_SIZE=1024
+    __BUFFER_SIZE=128000
     # handle method
     # @param self The object pointer. 
     # @details This method is the callback method for the TCPServe class to invoke when request is sent.

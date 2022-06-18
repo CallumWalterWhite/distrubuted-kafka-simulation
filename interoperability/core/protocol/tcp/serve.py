@@ -1,6 +1,7 @@
 from socketserver import TCPServer
 from threading import Thread
 import asyncio
+from core.exception.exception_manager import ExceptionManager
 from .handler import TcpRequestHandler
 
 ## TCPServe class.
@@ -19,6 +20,8 @@ class TCPServe():
     __class_ref = None
     ## TCPServer variable
     __httpd: TCPServer
+    # exception_manager variable
+    __exception_manager: ExceptionManager
 
     ## __init__ method.
     #  @param self The object pointer.
@@ -29,6 +32,7 @@ class TCPServe():
         self.__class_ref = class_ref
         self.__alive_thread = Thread(target=asyncio.run, args=(self.__create(),))
         self.__alive_thread.start()
+        self.__exception_manager = ExceptionManager()
     
     ## __create method.
     #  @param self The object pointer.
@@ -39,10 +43,8 @@ class TCPServe():
             self.__httpd.class_ref = self.__class_ref
             try:
                 await self.__httpd.serve_forever()
-            except:
-                #THROWS ON SHUTDOWN
-                print('Server shutting down....')
-                self.__httpd.shutdown()
+            except Exception as e:
+                self.__exception_manager.handle(e)
     
     ## close method.
     #  @param self The object pointer.

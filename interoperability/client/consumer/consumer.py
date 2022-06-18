@@ -30,6 +30,7 @@ class Consumer():
         # Get cluster info
         self.__cluster_info = self.__get_cluster_info()
         self.__stop = False
+        self.__exception_manager = ExceptionManager()
 
     ## bootstrap_consumer method.
     # @details This method is used to bootstrap a consumer.
@@ -113,22 +114,25 @@ class Consumer():
     async def subscribe(self, topic_ids, callback=None):
         topic_brokers = [x for x in self.__cluster_info if x["topic_id"] in topic_ids]
         # while loop to keep consuming messages
-        while(self.__stop is not True):
-            for topic_broker in topic_brokers:
-                try:
-                    sender: Sender = Sender(topic_broker['broker_address'], int(topic_broker['broker_port']), BUFFER_SIZE)
-                    response = sender.send(Message(GET_MEESAGES, {
-                        "id": topic_broker["topic_id"],
-                        "consumer_group_id": self.__consumer_group_id
-                    }))
-                    if (len(response['messages']) > 0):
-                        print(f"Messages pulled from topic - {topic_broker['topic']}")
-                        print(f"Consumer group - {self.__consumer_group_name}")
-                        print(f"Message Count - {len(response['messages'])}")
-                        print(f"Messages - {response['messages']}")
-                        if (callback is not None):
-                            callback(response['messages'])
-                except Exception as e:
-                    pass
-            # sleep for a second before pulling messages again
-            await asyncio.sleep(0.5)
+        try:
+            while(self.__stop is not True):
+                for topic_broker in topic_brokers:
+                    try:
+                        sender: Sender = Sender(topic_broker['broker_address'], int(topic_broker['broker_port']), BUFFER_SIZE)
+                        response = sender.send(Message(GET_MEESAGES, {
+                            "id": topic_broker["topic_id"],
+                            "consumer_group_id": self.__consumer_group_id
+                        }))
+                        if (len(response['messages']) > 0):
+                            print(f"Messages pulled from topic - {topic_broker['topic']}")
+                            print(f"Consumer group - {self.__consumer_group_name}")
+                            print(f"Message Count - {len(response['messages'])}")
+                            print(f"Messages - {response['messages']}")
+                            if (callback is not None):
+                                callback(response['messages'])
+                    except Exception as e:
+                        pass
+                # sleep for a second before pulling messages again
+                await asyncio.sleep(1)
+        except Exception as e:
+            self.__exception_manager.handle(e)

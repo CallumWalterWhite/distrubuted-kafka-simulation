@@ -44,10 +44,11 @@ class BrokerService():
     # @param partition_id UUID
     # @param message Message
     # @return Boolean
-    def add_message(self, topic_id, partition_id, message):
+    def add_message(self, topic_id, partition_id, messages):
         topic: Topic = self.__broker.get_topic(topic_id)
         partition: Partition = topic.get_partition(partition_id)
-        partition.add_message(message)
+        for message in messages:
+            partition.add_message(message)
         return True
 
     ## add_topic method.

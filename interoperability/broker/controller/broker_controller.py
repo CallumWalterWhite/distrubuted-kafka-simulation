@@ -29,8 +29,8 @@ class BrokerController():
         try:
             topic_id = UUID(data['topic_id'])
             partition_id = UUID(data['partition_id'])
-            message = data['message']
-            isDone = self.__service.add_message(topic_id, partition_id, message)
+            messages = data['messages']
+            isDone = self.__service.add_message(topic_id, partition_id, messages)
         except Exception as e:
             self.__exception_manager.handle(e)
         return {

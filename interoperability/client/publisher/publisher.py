@@ -85,10 +85,10 @@ class Publisher():
                 if i == (len(topic_brokers) - 1):
                     size_n = batch_size + batch_size_r
                 i += 1
-                print(size_n)
-                for x in range(0, size_n):
-                    #create a thread for each batch messages to send.
-                    Thread(target=asyncio.run, args=(self.__publish_message(topic_broker['topic_id'], topic_broker['partition_id'], topic_broker, topic_message),)).start()
+                messages = []
+                for x in range(0, (size_n)):
+                    messages.append(topic_message)
+                Thread(target=asyncio.run, args=(self.__publish_message(topic_broker['topic_id'], topic_broker['partition_id'], topic_broker, messages),)).start()
     ## __add_message method.
     # @param self The object pointer.
     # @param topic_id The topic id.
@@ -96,13 +96,13 @@ class Publisher():
     # @param broker The broker.
     # @param topic_message The topic message.
     # @details This method is used to send a message to a broker with a topic and partition.
-    async def __publish_message(self, topic_id, partition_id, broker, topic_message):
+    async def __publish_message(self, topic_id, partition_id, broker, topic_messages):
         try:
             sender: Sender = Sender(broker['broker_address'], int(broker['broker_port']), BUFFER_SIZE)
             response = await sender.send_async( Message(ADD_MEESAGE, {
                 "topic_id": topic_id,
                 "partition_id": partition_id,
-                "message": topic_message
+                "messages": topic_messages
             }))
             return response
         except Exception as e:

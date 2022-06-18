@@ -32,6 +32,7 @@ class Sender():
                 data = s.recv(self.buffer_size)
                 json_data = str(data.decode(self.decoder))
                 response_object = json.loads(json_data)
+                s.close()
                 if response_object['status_code'] == 200:
                     return response_object['data']
                 else:
@@ -48,3 +49,4 @@ class Sender():
                 data = s.recv(self.buffer_size)
                 json_data = str(data.decode(self.decoder))
                 response_object = json.loads(json_data)
+                s.close()
