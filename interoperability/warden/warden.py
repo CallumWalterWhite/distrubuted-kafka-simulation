@@ -56,7 +56,11 @@ class Warden():
         print('6. List Consumers')
         print('7. Stop warden')
         print('---------------------------------- \n')
-        user_selection = input()
+        try:
+            user_selection = input()
+        except KeyboardInterrupt:
+            print('Wrong input \n')
+            self.__print_menu()
         self.__command_factory(user_selection)
 
     ## __start_broker method:
