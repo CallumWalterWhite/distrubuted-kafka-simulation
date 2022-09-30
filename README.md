@@ -1,4 +1,8 @@
-# python message broker
+# Kafka in python
+
+Apache Kafka is a distributed publish-subscribe messaging system and a robust queue that can handle a high volume of data and enables you to pass messages from one end-point to another. Kafka is suitable for both offline and online message consumption. Kafka messages are persisted on the disk and replicated within the cluster to prevent data loss. 
+
+This repo demostrates the simulation of kafka built in python.
 
 # IDE Used -
 Visual Studio Code
